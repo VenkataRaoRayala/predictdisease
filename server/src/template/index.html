@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+   <h1>AI health prediction</h1>
+
+
+  <label for="symptoms">symptoms:</label><br>
+  <input type="text" id="symptoms" name="symptoms"><br><br>
+   <button type="submit" id="submit" value="submit">Submit</button>
+   <h2>Disease</h2>
+   <p id="disease_name"><---search something---></p>
+   <h2>Medicines</h2>
+   <div id="Medicines">
+
+   </div>
+
+
+
+</body>
+<script >
+  var xhttp = new XMLHttpRequest();
+
+const button = document.getElementById('submit');
+
+button.addEventListener('click', async _ => {
+const formField= document.getElementById('symptoms');
+var data={};
+console.log('data:',formField.value);
+  try {
+    const response = await fetch(window.location.origin+'/predict', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+    },
+      body:JSON.stringify({ "symptoms": formField.value })
+    });
+    console.log('Completed!', response);
+     console.log(response.body)
+     var body = await response.json();
+     console.log(body)
+     if(body!="Medicine not available"){
+    console.log(body["final_prediction"])
+    console.log(body["medicine"])
+
+    const disease = document.getElementById('disease_name');
+    disease.innerText=body["final_prediction"];
+    const Medicine = document.getElementById('Medicines');
+    Medicine.innerText=body["medicine"];
+    }else{
+        const Medicine = document.getElementById('Medicines');
+    Medicine.innerText=body;
+    }
+
+    
+
+
+  } catch(err) {
+    console.error(`Error: ${err}`);
+  }
+});
+</script>
+</html>
